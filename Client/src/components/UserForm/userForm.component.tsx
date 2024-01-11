@@ -46,7 +46,6 @@ export default function UserForm(props: { formType: userFormType }) {
   }
 
   const HandleChange = (e: any, inputType: InputType) => {
-    console.log(firstName, secondName, email, password);
     switch (inputType) {
       case InputType.email:
         setEmail(e.target.value);
@@ -102,16 +101,16 @@ export default function UserForm(props: { formType: userFormType }) {
       }
     } catch (e) {
       const error = e as AxiosError;
-      setAxiosErrorMessage(error?.response?.data);
+      setAxiosErrorMessage(error?.response?.data || error?.message);
       console.log(error);
       setOpen(true);
     }
   };
 
   return (
-    <div className="login-container">
+    <div className="form-wrap">
       <Form
-        className="login-form"
+        className="form-container"
         onSubmit={
           props.formType === userFormType.login
             ? () => HandleSubmit(SubmitType.login)
@@ -123,7 +122,7 @@ export default function UserForm(props: { formType: userFormType }) {
         </span>
         {props.formType == userFormType.register && (
           <>
-            <FormControl required className="login-element">
+            <FormControl required className="form-element">
               <TextField
                 error={firstNameError}
                 onChange={(e) => HandleChange(e, InputType.firstName)}
@@ -134,7 +133,7 @@ export default function UserForm(props: { formType: userFormType }) {
                 label="First name"
               />
             </FormControl>
-            <FormControl required className="login-element">
+            <FormControl required className="form-element">
               <TextField
                 error={secondNameError}
                 onChange={(e) => HandleChange(e, InputType.secondName)}
@@ -147,7 +146,7 @@ export default function UserForm(props: { formType: userFormType }) {
             </FormControl>
           </>
         )}
-        <FormControl required className="login-element">
+        <FormControl required className="form-element">
           <TextField
             error={emailError}
             onChange={(e) => HandleChange(e, InputType.email)}
@@ -158,7 +157,7 @@ export default function UserForm(props: { formType: userFormType }) {
             label="Email"
           />
         </FormControl>
-        <FormControl required className="login-element">
+        <FormControl required className="form-element">
           <TextField
             error={passwordError}
             onChange={(e) => HandleChange(e, InputType.password)}
@@ -170,11 +169,11 @@ export default function UserForm(props: { formType: userFormType }) {
             label="Password"
           />
         </FormControl>
-        <Button className="login-element" type="submit">
+        <Button className="form-element" type="submit">
           Submit
         </Button>
         <Link
-          className="register-link login-element"
+          className="register-link form-element"
           to={props.formType === userFormType.login ? "/register" : "/login"}
         >
           {props.formType === userFormType.login ? "Register" : "Log in"}

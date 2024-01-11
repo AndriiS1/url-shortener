@@ -6,14 +6,14 @@ import {
   refresh_route,
 } from "../ApiRoutes/apiRoutes";
 
-const instance = axios.create({
+const api = axios.create({
   baseURL: server_url,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-instance.interceptors.request.use(
+api.interceptors.request.use(
   (config) => {
     const token = TokenService.getLocalAccessToken();
     if (token) {
@@ -26,7 +26,7 @@ instance.interceptors.request.use(
   }
 );
 
-instance.interceptors.response.use(
+api.interceptors.response.use(
   (res) => {
     return res;
   },
@@ -38,14 +38,14 @@ instance.interceptors.response.use(
         originalConfig._retry = true;
 
         try {
-          const rs = await instance.post(refresh_route, {
+          const response = await api.post(refresh_route, {
             refreshToken: TokenService.getLocalRefreshToken(),
           });
 
-          const { accessToken } = rs.data;
+          const { accessToken } = response.data;
           TokenService.updateLocalAccessToken(accessToken);
 
-          return instance(originalConfig);
+          return api(originalConfig);
         } catch (_error) {
           return Promise.reject(_error);
         }
@@ -56,4 +56,4 @@ instance.interceptors.response.use(
   }
 );
 
-export default instance;
+export default api;

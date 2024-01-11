@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import Root from "./components/Main/main.component";
+import Root from "./components/NavigationBar/navigationBar.component";
 import ErrorPage from "./components/ErrorPage/errorPage.component";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import UserForm, {

@@ -5,18 +5,23 @@ export type UserTokens = {
 
 class TokenService {
   getLocalRefreshToken() {
-    const user = JSON.parse(localStorage.getItem("userTokens")!);
-
-    return user?.refreshToken;
+    const userTokens: UserTokens = JSON.parse(
+      localStorage.getItem("userTokens")!
+    );
+    return userTokens?.refreshToken;
   }
 
   getLocalAccessToken() {
-    const userTokens = JSON.parse(localStorage.getItem("userTokens")!);
+    const userTokens: UserTokens = JSON.parse(
+      localStorage.getItem("userTokens")!
+    );
     return userTokens?.accessToken;
   }
 
   updateLocalAccessToken(token: string) {
-    let userTokens = JSON.parse(localStorage.getItem("userTokens")!);
+    let userTokens: UserTokens = JSON.parse(
+      localStorage.getItem("userTokens")!
+    );
     userTokens.accessToken = token;
     localStorage.setItem("userTokens", JSON.stringify(userTokens));
   }
@@ -26,7 +31,6 @@ class TokenService {
   }
 
   setUserTokens(userTokens: UserTokens) {
-    console.log(JSON.stringify(userTokens));
     localStorage.setItem("userTokens", JSON.stringify(userTokens));
   }
 

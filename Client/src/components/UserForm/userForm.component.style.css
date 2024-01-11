@@ -1,11 +1,11 @@
-.login-container {
+.form-wrap {
   display: flex;
   align-items: center;
   margin-left: auto;
   margin-right: auto;
 }
 
-.login-form {
+.form-container {
   display: flex;
   flex-direction: column;
   padding-left: 45px;
@@ -21,7 +21,7 @@
   margin-right: 0;
 }
 
-.login-element {
+.form-element {
   margin: 5px;
   display: flex;
   flex-direction: column;
