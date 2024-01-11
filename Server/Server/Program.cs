@@ -17,6 +17,7 @@ namespace Server
             builder.Services.AddJwtService();
             builder.Services.AddHashService();
             builder.Services.AddUnitOfWork();
+            builder.Services.AddurlShortenerService();
             builder.Services.AddValidationService();
             builder.Services.AddCustomCORS();
 

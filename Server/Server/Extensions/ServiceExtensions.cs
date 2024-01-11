@@ -56,6 +56,11 @@ namespace ServerPesentation.Extensions
             services.AddSingleton<IValidationService, ValidationService>();
         }
 
+        public static void AddurlShortenerService(this IServiceCollection services)
+        {
+            services.AddSingleton<IUrlShortenerService, UrlShortenerService>();
+        }
+
         public static void AddUnitOfWork(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();

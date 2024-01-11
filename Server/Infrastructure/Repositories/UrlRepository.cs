@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class UrlRepository : Repository<User>, IUrlRepository
+    public class UrlRepository : Repository<Url>, IUrlRepository
     {
         public UrlRepository(DbContext context) : base(context)
         {

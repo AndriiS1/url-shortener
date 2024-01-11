@@ -2,7 +2,15 @@ import { useEffect, useState } from "react";
 import UrlService from "../../Services/url.service";
 import { TableUrl } from "./Types/types";
 import tokenService from "../../Services/token.service";
-import { Button } from "@mui/material";
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import ShortenUrlModal from "./ShortenUrlModal/shortenUrlModal.component";
 import "./urlsTable.component.style.css";
 export default function UrlsTable() {
@@ -17,10 +25,34 @@ export default function UrlsTable() {
 
   useEffect(() => {
     SetUrlData();
-  }, []);
+  }, [isModalOpen]);
 
   const displayUrlsTable = () => {
-    return <></>;
+    return (
+      <TableContainer sx={{ width: "100%" }}>
+        <Table sx={{ width: 650, margin: "auto" }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Original url</TableCell>
+              <TableCell align="right">Short url</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tableUrls?.map((row) => (
+              <TableRow
+                key={row.originalUrl}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {row.originalUrl}
+                </TableCell>
+                <TableCell align="right">{row.shortUrl}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
   };
 
   return (

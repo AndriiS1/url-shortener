@@ -1,10 +1,17 @@
 import api from "./api";
 import TokenService from "./token.service";
-import { get_table_urls_data } from "../ApiRoutes/apiRoutes";
+import { url_route } from "../ApiRoutes/apiRoutes";
 
 class UrlService {
   GetTableUrlsData() {
-    return api.get(get_table_urls_data).then((response) => {
+    return api.get(url_route).then((response) => {
+      return response.data;
+    });
+  }
+
+  CreateShortUlr(originalUrl: string) {
+    console.log(originalUrl);
+    return api.post(url_route, { originalUrl }).then((response) => {
       if (response.data.accessToken) {
         TokenService.setUserTokens({
           accessToken: response.data.accessToken,
@@ -55,21 +62,6 @@ class UrlService {
 
   //       return response.data;
   //     });
-  //   }
-
-  //   PassTest(testId: number, mark: number) {
-  //     return api
-  //       .post(`${test_passed_route}`, { testId, mark })
-  //       .then((response) => {
-  //         if (response.data.accessToken) {
-  //           TokenService.setUserTokens({
-  //             accessToken: response.data.accessToken,
-  //             refreshToken: response.data.refreshToken,
-  //           });
-  //         }
-
-  //         return response.data;
-  //       });
   //   }
 }
 
