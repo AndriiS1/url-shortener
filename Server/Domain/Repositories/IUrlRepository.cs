@@ -3,7 +3,7 @@ using Domain.Models;
 
 namespace Domain.Repositories
 {
-    public interface IUrlRepository : IRepository<User>
+    public interface IUrlRepository : IRepository<Url>
     {
         IEnumerable<TableUrlDataDto> GetAllTableUrls();
     }
