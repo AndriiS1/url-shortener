@@ -1,9 +1,16 @@
-.urls-wrap {
+.table-content-wrap {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-url-btn {
+  margin-top: 10px;
+  background-color: black;
 }
 
 .no-content-text {
+  margin-top: 10%;
   font-size: 100;
 }

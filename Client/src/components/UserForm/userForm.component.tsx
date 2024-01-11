@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./userForm.component.style.css";
 import { Form, Link, useNavigate } from "react-router-dom";
-import { Button, FormControl, Input } from "@mui/base";
+import { Button, FormControl } from "@mui/material";
 import { Snackbar, TextField } from "@mui/material";
 import { AxiosError } from "axios";
 import AuthService from "../../Services/auth.service";
@@ -122,53 +122,45 @@ export default function UserForm(props: { formType: userFormType }) {
         </span>
         {props.formType == userFormType.register && (
           <>
-            <FormControl required className="form-element">
-              <TextField
-                error={firstNameError}
-                onChange={(e) => HandleChange(e, InputType.firstName)}
-                required
-                placeholder="Name"
-                className="input-box"
-                size="small"
-                label="First name"
-              />
-            </FormControl>
-            <FormControl required className="form-element">
-              <TextField
-                error={secondNameError}
-                onChange={(e) => HandleChange(e, InputType.secondName)}
-                required
-                placeholder="Surname"
-                className="input-box"
-                size="small"
-                label="Second name"
-              />
-            </FormControl>
+            <TextField
+              error={firstNameError}
+              onChange={(e) => HandleChange(e, InputType.firstName)}
+              required
+              placeholder="Name"
+              margin="dense"
+              size="small"
+              label="First name"
+            />
+            <TextField
+              error={secondNameError}
+              onChange={(e) => HandleChange(e, InputType.secondName)}
+              required
+              placeholder="Surname"
+              margin="dense"
+              size="small"
+              label="Second name"
+            />
           </>
         )}
-        <FormControl required className="form-element">
-          <TextField
-            error={emailError}
-            onChange={(e) => HandleChange(e, InputType.email)}
-            required
-            placeholder="example@gmail.com"
-            className="input-box"
-            size="small"
-            label="Email"
-          />
-        </FormControl>
-        <FormControl required className="form-element">
-          <TextField
-            error={passwordError}
-            onChange={(e) => HandleChange(e, InputType.password)}
-            required
-            type="password"
-            placeholder="Password"
-            className="input-box"
-            size="small"
-            label="Password"
-          />
-        </FormControl>
+        <TextField
+          error={emailError}
+          onChange={(e) => HandleChange(e, InputType.email)}
+          required
+          placeholder="example@gmail.com"
+          margin="dense"
+          size="small"
+          label="Email"
+        />
+        <TextField
+          error={passwordError}
+          onChange={(e) => HandleChange(e, InputType.password)}
+          required
+          type="password"
+          placeholder="Password"
+          margin="dense"
+          size="small"
+          label="Password"
+        />
         <Button className="form-element" type="submit">
           Submit
         </Button>
