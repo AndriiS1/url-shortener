@@ -14,7 +14,12 @@ namespace Infrastructure.Repositories
 
         public IEnumerable<TableUrlDataDto> GetAllTableUrls() 
         {
-            return _context.Set<Url>().Select(e => new TableUrlDataDto() {OriginalUrl = e.OriginalUrl, ShortUrl=e.ShortUrl});
+            return _context.Set<Url>().Select(e => new TableUrlDataDto() {Id = e.Id, OriginalUrl = e.OriginalUrl, ShortUrl=e.ShortUrl});
+        }
+
+        public Url? GetUrlWithLoadedUserData(long id)
+        {
+            return _context.Set<Url>().Include(e => e.User).Single(e => e.Id == id);
         }
     }
 }

@@ -42,5 +42,28 @@ namespace ServerPesentation.Controllers
             }
             return Unauthorized();
         }
+
+        [HttpGet("{id:long}")]
+        public IActionResult GetUrlInfo(long id)
+        {
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            if (claimsIdentity != null)
+            {
+                Url? foundUrl = _unitOfWork.Urls.GetUrlWithLoadedUserData(id);
+                if (foundUrl != null) 
+                {
+                    return Ok(new UrlInfoDto { Id = foundUrl.Id, 
+                        OriginalUrl = foundUrl.OriginalUrl, 
+                        ShortUrl = foundUrl.ShortUrl, 
+                        Date = foundUrl.Date,
+                        UserName = $"{foundUrl.User?.FirstName} {foundUrl.User?.SecondName}" });
+                }
+                else
+                {
+                    return BadRequest("Url with this id is not found.");
+                }
+            }
+            return Unauthorized();
+        }
     }
 }

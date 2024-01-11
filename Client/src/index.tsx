@@ -9,6 +9,7 @@ import UserForm, {
 } from "./components/UserForm/userForm.component";
 import ProtectedWrap from "./components/ProtectedWrap/protectedWrap.component";
 import UrlsTable from "./components/UrlsTable/urlsTable.component";
+import UrlInfo from "./components/UrlInfo/urlInfo.component";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,14 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <UrlsTable />,
+      },
+      {
+        path: "/:id",
+        element: (
+          <ProtectedWrap>
+            <UrlInfo />
+          </ProtectedWrap>
+        ),
       },
     ],
     errorElement: <ErrorPage />,

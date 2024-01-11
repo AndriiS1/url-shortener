@@ -6,5 +6,6 @@ namespace Domain.Repositories
     public interface IUrlRepository : IRepository<Url>
     {
         IEnumerable<TableUrlDataDto> GetAllTableUrls();
+        Url? GetUrlWithLoadedUserData(long id);
     }
 }

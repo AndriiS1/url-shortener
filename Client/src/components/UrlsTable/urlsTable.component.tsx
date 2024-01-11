@@ -13,10 +13,13 @@ import {
 } from "@mui/material";
 import ShortenUrlModal from "./ShortenUrlModal/shortenUrlModal.component";
 import "./urlsTable.component.style.css";
+import { useNavigate } from "react-router-dom";
+
 export default function UrlsTable() {
   const [tableUrls, setTableUrls] = useState<TableUrl[]>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const userIsLogged = tokenService.isUserLogged();
+  const navigate = useNavigate();
 
   const SetUrlData = async () => {
     let response = await UrlService.GetTableUrlsData();
@@ -33,20 +36,24 @@ export default function UrlsTable() {
         <Table sx={{ width: 650, margin: "auto" }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Original url</TableCell>
-              <TableCell align="right">Short url</TableCell>
+              <TableCell align="center">Original url</TableCell>
+              <TableCell align="center">Short url</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {tableUrls?.map((row) => (
               <TableRow
-                key={row.originalUrl}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                className="custom-table-row"
+                key={row.id}
+                sx={{
+                  "&:last-child td, &:last-child th": { border: 0 },
+                }}
+                onClick={() => {
+                  navigate(`${row.id}`);
+                }}
               >
-                <TableCell component="th" scope="row">
-                  {row.originalUrl}
-                </TableCell>
-                <TableCell align="right">{row.shortUrl}</TableCell>
+                <TableCell align="left">{row.originalUrl}</TableCell>
+                <TableCell align="left">{row.shortUrl}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -57,7 +64,7 @@ export default function UrlsTable() {
 
   return (
     <div className="table-content-wrap">
-      {userIsLogged ? (
+      {userIsLogged && (
         <>
           <Button
             sx={{
@@ -71,18 +78,17 @@ export default function UrlsTable() {
           >
             Shorten new url ✂️
           </Button>
-          {tableUrls && tableUrls?.length > 0 ? (
-            displayUrlsTable()
-          ) : (
-            <h1 className="no-content-text">
-              {"No urls available. Let's add them..."}
-            </h1>
-          )}
           <ShortenUrlModal open={isModalOpen} setOpen={setIsModalOpen} />
         </>
+      )}
+
+      {tableUrls && tableUrls?.length > 0 ? (
+        displayUrlsTable()
       ) : (
         <h1 className="no-content-text">
-          {"No urls available. Let's log in and add them..."}
+          {`No urls available. Let's ${
+            userIsLogged ? "log in and" : ""
+          }add them...`}
         </h1>
       )}
     </div>
