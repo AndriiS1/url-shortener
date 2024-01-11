@@ -8,26 +8,18 @@ import UserForm, {
   userFormType,
 } from "./components/UserForm/userForm.component";
 import ProtectedWrap from "./components/ProtectedWrap/protectedWrap.component";
-import TestsList from "./components/ShortenUrlsTable/shortenUrlsTable.component";
+import UrlsTable from "./components/UrlsTable/urlsTable.component";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <ProtectedWrap>
-        <Root />
-      </ProtectedWrap>
-    ),
-    // children: [
-    //   {
-    //     path: "/",
-    //     element: <TestsList></TestsList>,
-    //   },
-    //   {
-    //     path: "test",
-    //     element: <TestsPage></TestsPage>,
-    //   },
-    // ],
+    element: <Root />,
+    children: [
+      {
+        path: "/",
+        element: <UrlsTable />,
+      },
+    ],
     errorElement: <ErrorPage />,
   },
   {

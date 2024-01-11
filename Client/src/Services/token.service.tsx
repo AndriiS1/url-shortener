@@ -30,6 +30,10 @@ class TokenService {
     return JSON.parse(localStorage.getItem("userTokens")!);
   }
 
+  isUserLogged() {
+    return this.getUserTokens() === null ? true : false;
+  }
+
   setUserTokens(userTokens: UserTokens) {
     localStorage.setItem("userTokens", JSON.stringify(userTokens));
   }

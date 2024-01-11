@@ -16,15 +16,13 @@ namespace ServerPesentation.Controllers
         private readonly IJwtService _jwtService;
         private readonly IHashService _hashService;
         private readonly IValidationService _validationService;
-        private readonly IConfiguration _config;
 
-        public AuthenticationController(IUnitOfWork unitOfWork, IJwtService jwtService, IHashService hashService, IValidationService validationService, IConfiguration config)
+        public AuthenticationController(IUnitOfWork unitOfWork, IJwtService jwtService, IHashService hashService, IValidationService validationService)
         {
             _unitOfWork = unitOfWork;
             _jwtService = jwtService;
             _hashService = hashService;
             _validationService = validationService;
-            _config = config;
         }
 
         [AllowAnonymous]

@@ -11,5 +11,6 @@ namespace Domain.Models
         public string? Password { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
+        public ICollection<Url> Urls { get; } = new List<Url>();
     }
 }

@@ -1,5 +1,9 @@
-.tests-container {
+.urls-wrap {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+}
+
+.no-content-text {
+  font-size: 100;
 }

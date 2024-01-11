@@ -9,12 +9,14 @@ namespace Infrastructure.DataBase
     {
         private readonly ServerDbContext _context;
         public IUserRepository Users { get; private set; }
+        public IUrlRepository Urls { get; private set; }
 
         private bool disposed = false;
         public UnitOfWork(ServerDbContext context)
         {
             _context = context;
             Users = new UserRepository(_context);
+            Urls = new UrlRepository(_context);
         }
 
         public int Complete()
