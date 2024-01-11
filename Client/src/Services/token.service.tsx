@@ -31,7 +31,7 @@ class TokenService {
   }
 
   isUserLogged() {
-    return this.getUserTokens() === null ? true : false;
+    return this.getUserTokens() !== null ? true : false;
   }
 
   setUserTokens(userTokens: UserTokens) {
