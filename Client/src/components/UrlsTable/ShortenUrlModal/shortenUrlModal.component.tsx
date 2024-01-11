@@ -26,13 +26,10 @@ export default function ShortenUrlModal(props: {
         <Fade in={props.open}>
           <Box className="modal-box">
             <Form className="add-modal-form" onSubmit={() => {}}>
-              <span className="form-title">Input task params</span>
+              <span className="form-title">Shorten url</span>
               <FormControl required className="add-modal-element">
-                <FormLabel className="label">Input alphabet</FormLabel>
-                <TextareaAutosize
-                  className="url-text-area"
-                  placeholder="Empty"
-                />
+                <FormLabel className="label">Input your url</FormLabel>
+                <TextField multiline rows={4} maxRows={20} />
               </FormControl>
               <div className="add-modal-button-container">
                 <Button type="submit">Submit</Button>

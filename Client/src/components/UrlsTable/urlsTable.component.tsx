@@ -5,7 +5,6 @@ import tokenService from "../../Services/token.service";
 import { Button } from "@mui/material";
 import ShortenUrlModal from "./ShortenUrlModal/shortenUrlModal.component";
 import "./urlsTable.component.style.css";
-
 export default function UrlsTable() {
   const [tableUrls, setTableUrls] = useState<TableUrl[]>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -29,11 +28,16 @@ export default function UrlsTable() {
       {userIsLogged ? (
         <>
           <Button
-            className="add-url-btn"
+            sx={{
+              backgroundColor: "black",
+              color: "white",
+              ":hover": { backgroundColor: "rgb(73, 73, 73)" },
+              margin: "10px",
+            }}
             size="large"
             onClick={() => setIsModalOpen(true)}
           >
-            Shorten new url
+            Shorten new url ✂️
           </Button>
           {tableUrls && tableUrls?.length > 0 ? (
             displayUrlsTable()
