@@ -1,0 +1,31 @@
+.content-wrap {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  background: linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(235, 235, 235, 1) 100%
+  );
+  overflow: auto;
+}
+.nav-link {
+  margin: 0 10px 0 10px;
+  color: white;
+  text-decoration: none;
+  &:hover {
+    color: rgb(208, 206, 206);
+  }
+}
+.nav-bar-wrap {
+  position: static;
+  background-color: black;
+}
+
+.name-info {
+  color: white;
+}
+
+.nav-buttons {
+  flex: 1;
+}

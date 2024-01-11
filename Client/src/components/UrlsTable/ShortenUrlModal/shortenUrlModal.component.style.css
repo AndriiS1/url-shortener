@@ -1,0 +1,49 @@
+.add-modal-form {
+  display: flex;
+  flex-direction: column;
+  padding-left: 45px;
+  padding-right: 45px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.label {
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.add-modal-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.modal-box {
+  position: absolute;
+  border: none;
+  border-radius: 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+  background-color: white;
+  box-shadow: 24;
+}
+
+.modal-container {
+  margin: 5%;
+}
+
+.url-text-area {
+  border: none;
+  &:hover {
+    border-color: #3399ff;
+  }
+
+  &:focus {
+    border-color: #3399ff;
+    box-shadow: 0 0 0 3px #0072e5;
+  }
+}

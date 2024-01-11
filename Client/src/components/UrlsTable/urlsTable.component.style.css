@@ -1,0 +1,11 @@
+.table-content-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.no-content-text {
+  margin-top: 10%;
+  font-size: 100;
+}
