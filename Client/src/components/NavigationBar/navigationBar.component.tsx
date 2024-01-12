@@ -21,6 +21,9 @@ export default function Root() {
             <NavLink className="nav-link" to={"/"}>
               Home
             </NavLink>
+            <NavLink className="nav-link" to={"/about"}>
+              About
+            </NavLink>
           </div>
           <div className="name-info">
             {token && `${tokenClaims?.name} ${tokenClaims?.family_name}`}
