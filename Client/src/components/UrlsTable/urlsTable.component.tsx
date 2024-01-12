@@ -41,7 +41,6 @@ export default function UrlsTable() {
 
   useEffect(() => {
     setUrlData();
-    console.log(tokenClaims);
   }, [isModalOpen]);
 
   const handleDelete = async (id: number) => {
@@ -49,7 +48,7 @@ export default function UrlsTable() {
       await UrlService.DeleteUrl(id);
       setUrlData();
     } catch (e) {
-      console.log("error here", e);
+      console.log(e);
     }
   };
 

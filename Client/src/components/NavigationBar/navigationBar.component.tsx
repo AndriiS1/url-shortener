@@ -12,7 +12,6 @@ export default function Root() {
     ? jwt_decode<{ name: string; family_name: string }>(`${token}`)
     : undefined;
 
-  console.log(userIsLogged);
   return (
     <div className="content-wrap">
       <div className="nav-bar-wrap">
