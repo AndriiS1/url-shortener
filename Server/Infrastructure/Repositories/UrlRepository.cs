@@ -19,7 +19,7 @@ namespace Infrastructure.Repositories
 
         public Url? GetUrlWithLoadedUserData(long id)
         {
-            return _context.Set<Url>().Include(e => e.User).Single(e => e.Id == id);
+            return _context.Set<Url>().Include(e => e.User).SingleOrDefault(e => e.Id == id);
         }
     }
 }

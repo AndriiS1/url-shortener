@@ -32,6 +32,10 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
+    path: "/about",
+    element: <></>,
+  },
+  {
     path: "/login",
     element: <UserForm formType={userFormType.login} />,
   },

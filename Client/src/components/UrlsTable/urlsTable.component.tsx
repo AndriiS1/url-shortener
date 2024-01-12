@@ -48,9 +48,13 @@ export default function UrlsTable() {
                 sx={{
                   "&:last-child td, &:last-child th": { border: 0 },
                 }}
-                onClick={() => {
-                  navigate(`${row.id}`);
-                }}
+                onClick={
+                  userIsLogged
+                    ? () => {
+                        navigate(`${row.id}`);
+                      }
+                    : undefined
+                }
               >
                 <TableCell align="left">{row.originalUrl}</TableCell>
                 <TableCell align="left">{row.shortUrl}</TableCell>
