@@ -1,8 +1,17 @@
-import { Box, Button, Fade, FormLabel, Modal, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Fade,
+  FormLabel,
+  Modal,
+  Snackbar,
+  TextField,
+} from "@mui/material";
 import "./shortenUrlModal.component.style.css";
 import { Form } from "react-router-dom";
 import urlService from "../../../Services/url.service";
 import { useEffect, useState } from "react";
+import { AxiosError } from "axios";
 
 export default function ShortenUrlModal(props: {
   open: boolean;
@@ -10,13 +19,23 @@ export default function ShortenUrlModal(props: {
 }) {
   const [url, setUrl] = useState<string>();
   const [urlError, setUrlError] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [requestErrorMsg, setRequestErrorMsg] = useState<any>("");
+
   const urlRegexPattern = new RegExp(
     "(https?://(?:www.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9].[^s]{2,}|www.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9].[^s]{2,}|https?://(?:www.|(?!www))[a-zA-Z0-9]+.[^s]{2,}|www.[a-zA-Z0-9]+.[^s]{2,})"
   );
 
   const handleSubmit = async () => {
-    url && (await urlService.CreateShortUlr(url));
-    props.setOpen(false);
+    try {
+      url && (await urlService.CreateShortUlr(url));
+      props.setOpen(false);
+    } catch (e) {
+      const error = e as AxiosError;
+      setRequestErrorMsg(error?.response?.data || error?.message);
+      console.log(error);
+      setOpen(true);
+    }
   };
 
   useEffect(() => {
@@ -52,6 +71,12 @@ export default function ShortenUrlModal(props: {
           </Box>
         </Fade>
       </Modal>
+      <Snackbar
+        open={open}
+        onClose={() => setOpen(false)}
+        autoHideDuration={4000}
+        message={requestErrorMsg}
+      />
     </>
   );
 }

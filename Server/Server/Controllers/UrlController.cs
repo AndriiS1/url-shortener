@@ -4,6 +4,7 @@ using Domain.Models;
 using Domain.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 
 namespace ServerPesentation.Controllers
@@ -40,7 +41,39 @@ namespace ServerPesentation.Controllers
             if (userIdFromToken != null)
             {
                 long userId = long.Parse(userIdFromToken);
-                Url urlInstanse = new Url { Date = DateTime.Now, OriginalUrl = shortenUrlDto.OriginalUrl, UserId = userId, ShortUrl = _urlShortenerService.GenerageShortUrl(shortenUrlDto.OriginalUrl) };
+                var tryOriginalUrl = _unitOfWork.Urls.SingleOrDefault(u => String.Compare(u.OriginalUrl, shortenUrlDto.OriginalUrl) == 0);
+                if (tryOriginalUrl != null) 
+                {
+                    return BadRequest("This url is already shorten");
+                }
+
+                string generatedShortUrl = "";
+                string code = "";
+                while (true)
+                {
+                    string saltedPrefix = "";
+                    string? serverAddress = string.Format("{0}://{1}",
+                       HttpContext.Request.Scheme, HttpContext.Request.Host);
+                    code = _urlShortenerService.GenerageShortUrl(shortenUrlDto?.OriginalUrl?.ToLower() + saltedPrefix);
+                    generatedShortUrl = serverAddress + "/" + code;
+                    var tryFindShortUrl = _unitOfWork.Urls.SingleOrDefault(u => u.ShortUrl == generatedShortUrl);
+                    if(tryFindShortUrl == null){
+                        break;
+                    }
+                    else
+                    {
+                        Random random = new Random();
+                        saltedPrefix += random.Next(10).ToString();
+                    }
+                }
+
+                Url urlInstanse = new Url { 
+                    Date = DateTime.Now, 
+                    OriginalUrl = shortenUrlDto?.OriginalUrl,
+                    UserId = userId, 
+                    Code = code,
+                    ShortUrl = generatedShortUrl
+                };
                 _unitOfWork.Urls.Add(urlInstanse);
                 _unitOfWork.Complete();
                 return Ok();

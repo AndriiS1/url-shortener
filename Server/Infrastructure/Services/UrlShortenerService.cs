@@ -1,4 +1,5 @@
 ﻿using Domain.Services;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,21 @@ namespace Infrastructure.Services
 {
     public class UrlShortenerService : IUrlShortenerService
     {
+        private readonly String ALPHABET;
+        private readonly int BASE;
+
+        public UrlShortenerService()
+        {
+            ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            BASE = ALPHABET.Count();
+        }
+
         public string GenerageShortUrl(string url)
         {
-            return url;
+            int num = 0;
+            for ( int i = 0; i < url.Count(); i++)
+                num = num * BASE + ALPHABET.IndexOf(url[i]);
+            return Math.Abs(num).ToString();
         }
     }
 }
