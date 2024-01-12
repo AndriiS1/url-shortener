@@ -25,16 +25,21 @@ namespace ServerPesentation.Controllers
         [HttpGet]
         public IActionResult GetTableUrlsController()
         {
+            var userIdFromToken = (User.Identity as ClaimsIdentity)?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdFromToken != null){ 
+                long userId = long.Parse(userIdFromToken); 
+                return Ok(_unitOfWork.Urls.GetAllTableUrlsWithDeleteCheck(userId).ToList()); 
+            }
             return Ok(_unitOfWork.Urls.GetAllTableUrls().ToList());
         }
 
         [HttpPost]
         public IActionResult GetTableUrlsController(ShortenUrlDto shortenUrlDto)
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            if (claimsIdentity != null)
+            var userIdFromToken = (User.Identity as ClaimsIdentity)?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdFromToken != null)
             {
-                var userId = long.Parse(claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                long userId = long.Parse(userIdFromToken);
                 Url urlInstanse = new Url { Date = DateTime.Now, OriginalUrl = shortenUrlDto.OriginalUrl, UserId = userId, ShortUrl = _urlShortenerService.GenerageShortUrl(shortenUrlDto.OriginalUrl) };
                 _unitOfWork.Urls.Add(urlInstanse);
                 _unitOfWork.Complete();
@@ -57,6 +62,35 @@ namespace ServerPesentation.Controllers
                         ShortUrl = foundUrl.ShortUrl, 
                         Date = foundUrl.Date,
                         UserName = $"{foundUrl.User?.FirstName} {foundUrl.User?.SecondName}" });
+                }
+                else
+                {
+                    return BadRequest("Url with this id is not found.");
+                }
+            }
+            return Unauthorized();
+        }
+
+        [HttpDelete("{id:long}")]
+        public IActionResult DeleteUrl(long id)
+        {
+            var userIdFromToken = (User.Identity as ClaimsIdentity)?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdFromToken != null)
+            {
+                long userId = long.Parse(userIdFromToken);
+                Url? foundUrl = _unitOfWork.Urls.SingleOrDefault(e=> e.Id == id);
+                if (foundUrl != null)
+                {
+                    if(foundUrl.UserId == userId)
+                    {
+                        _unitOfWork.Urls.Remove(foundUrl);
+                        _unitOfWork.Complete();
+                        return NoContent();
+                    }
+                    else
+                    {
+                        return BadRequest("No permission.");
+                    }
                 }
                 else
                 {

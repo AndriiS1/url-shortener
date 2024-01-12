@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 export default function ShortenUrlModal(props: {
   open: boolean;
-  setOpen: (a: boolean) => void;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [url, setUrl] = useState<string>();
   const [urlError, setUrlError] = useState<boolean>(false);
@@ -14,8 +14,9 @@ export default function ShortenUrlModal(props: {
     "(https?://(?:www.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9].[^s]{2,}|www.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9].[^s]{2,}|https?://(?:www.|(?!www))[a-zA-Z0-9]+.[^s]{2,}|www.[a-zA-Z0-9]+.[^s]{2,})"
   );
 
-  const handleSubmit = () => {
-    url && urlService.CreateShortUlr(url);
+  const handleSubmit = async () => {
+    url && (await urlService.CreateShortUlr(url));
+    props.setOpen(false);
   };
 
   useEffect(() => {

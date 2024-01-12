@@ -10,6 +10,7 @@ namespace Domain.Repositories
         TEntity? FirstOrDefault(Expression<Func<TEntity, bool>> predicate);
         IEnumerable<TEntity> GetAll();
         IEnumerable<TEntity>? Find(Expression<Func<TEntity, bool>> predicate);
+        IEnumerable<bool> Select(Expression<Func<TEntity, bool>> predicate);
         void Add(TEntity entity);
         void Remove(TEntity entity);
     }

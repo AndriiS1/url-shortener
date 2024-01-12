@@ -29,46 +29,11 @@ class UrlService {
     });
   }
 
-  //   GetTest(testId: number) {
-  //     return api.get(`${get_tests_route}?testId=${testId}`).then((response) => {
-  //       if (response.data.accessToken) {
-  //         TokenService.setUserTokens({
-  //           accessToken: response.data.accessToken,
-  //           refreshToken: response.data.refreshToken,
-  //         });
-  //       }
-
-  //       return response.data;
-  //     });
-  //   }
-
-  //   GetTestQuestionsWithAnswers(testId: number) {
-  //     return api
-  //       .get(`${get_test_questions_with_answers_route}?testId=${testId}`)
-  //       .then((response) => {
-  //         if (response.data.accessToken) {
-  //           TokenService.setUserTokens({
-  //             accessToken: response.data.accessToken,
-  //             refreshToken: response.data.refreshToken,
-  //           });
-  //         }
-
-  //         return response.data;
-  //       });
-  //   }
-
-  //   GetAllUserPassedTestIds() {
-  //     return api.get(`${user_completed_test_ids_route}`).then((response) => {
-  //       if (response.data.accessToken) {
-  //         TokenService.setUserTokens({
-  //           accessToken: response.data.accessToken,
-  //           refreshToken: response.data.refreshToken,
-  //         });
-  //       }
-
-  //       return response.data;
-  //     });
-  //   }
+  DeleteUrl(id: number) {
+    return api.delete(`${url_route}/${id}`).then((response) => {
+      return response.data;
+    });
+  }
 }
 
 export default new UrlService();

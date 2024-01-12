@@ -23,13 +23,6 @@ function UrlInfo() {
     getUrlInfo();
   }, []);
 
-  var options = {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  };
-
   return (
     <>
       {urlInfo && (

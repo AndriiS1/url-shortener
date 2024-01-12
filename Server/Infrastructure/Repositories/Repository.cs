@@ -23,6 +23,12 @@ namespace Infrastructure.Repositories
             return _context.Set<TEntity>().Where(predicate).ToList();
         }
 
+        public IEnumerable<bool> Select(Expression<Func<TEntity, bool>> predicate)
+        {
+            return _context.Set<TEntity>().Select(predicate);
+        }
+
+
         public TEntity? Get(int id)
         {
             return _context.Set<TEntity>().Find(id);

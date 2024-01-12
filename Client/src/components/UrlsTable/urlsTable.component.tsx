@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import UrlService from "../../Services/url.service";
 import { TableUrl } from "./Types/types";
 import tokenService from "../../Services/token.service";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Button,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -21,14 +23,27 @@ export default function UrlsTable() {
   const userIsLogged = tokenService.isUserLogged();
   const navigate = useNavigate();
 
-  const SetUrlData = async () => {
-    let response = await UrlService.GetTableUrlsData();
-    setTableUrls(response);
+  const setUrlData = async () => {
+    try {
+      let response = await UrlService.GetTableUrlsData();
+      setTableUrls(response);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   useEffect(() => {
-    SetUrlData();
+    setUrlData();
   }, [isModalOpen]);
+
+  const handleDelete = async (id: number) => {
+    try {
+      await UrlService.DeleteUrl(id);
+      setUrlData();
+    } catch (e) {
+      console.log("error here", e);
+    }
+  };
 
   const displayUrlsTable = () => {
     return (
@@ -41,23 +56,36 @@ export default function UrlsTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {tableUrls?.map((row) => (
+            {tableUrls?.map((url) => (
               <TableRow
                 className="custom-table-row"
-                key={row.id}
+                key={url.id}
                 sx={{
                   "&:last-child td, &:last-child th": { border: 0 },
                 }}
                 onClick={
                   userIsLogged
                     ? () => {
-                        navigate(`${row.id}`);
+                        navigate(`${url.id}`);
                       }
                     : undefined
                 }
               >
-                <TableCell align="left">{row.originalUrl}</TableCell>
-                <TableCell align="left">{row.shortUrl}</TableCell>
+                <TableCell align="left">{url.originalUrl}</TableCell>
+                <TableCell align="left">{url.shortUrl}</TableCell>
+                <TableCell align="left">
+                  {url.canDelete && (
+                    <IconButton
+                      aria-label="fingerprint"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(url.id);
+                      }}
+                    >
+                      <DeleteIcon sx={{ color: "red" }} />
+                    </IconButton>
+                  )}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -91,7 +119,7 @@ export default function UrlsTable() {
       ) : (
         <h1 className="no-content-text">
           {`No urls available. Let's ${
-            userIsLogged ? "log in and" : ""
+            userIsLogged ? "log in and " : ""
           }add them...`}
         </h1>
       )}
