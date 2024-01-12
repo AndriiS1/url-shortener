@@ -9,3 +9,7 @@
   margin-top: 10%;
   font-size: 100;
 }
+
+.custom-table-row:hover {
+  background-color: rgb(193, 193, 193);
+}

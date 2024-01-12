@@ -33,7 +33,7 @@ export default function ShortenUrlModal(props: {
         <Fade in={props.open}>
           <Box className="modal-box">
             <Form className="add-modal-form" onSubmit={handleSubmit}>
-              <span className="form-title">Shorten url</span>
+              <span className="form-title">Shorten an url</span>
               <FormControl required className="add-modal-element">
                 <FormLabel className="label">Input your url</FormLabel>
                 <TextField
@@ -50,12 +50,6 @@ export default function ShortenUrlModal(props: {
           </Box>
         </Fade>
       </Modal>
-      <Snackbar
-        // open={openError}
-        // onClose={handleCloseError}
-        autoHideDuration={4000}
-        message="Active task limit is 5."
-      />
     </>
   );
 }

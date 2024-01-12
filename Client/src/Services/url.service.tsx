@@ -23,6 +23,12 @@ class UrlService {
     });
   }
 
+  GetUrlInfo(id: number) {
+    return api.get(`${url_route}/${id}`).then((response) => {
+      return response.data;
+    });
+  }
+
   //   GetTest(testId: number) {
   //     return api.get(`${get_tests_route}?testId=${testId}`).then((response) => {
   //       if (response.data.accessToken) {
