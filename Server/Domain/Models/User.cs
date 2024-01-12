@@ -1,4 +1,5 @@
-﻿using static System.Net.Mime.MediaTypeNames;
+﻿using Domain.Enums;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Domain.Models
 {
@@ -10,6 +11,7 @@ namespace Domain.Models
         public string? Email { get; set; }
         public string? Password { get; set; }
         public string? RefreshToken { get; set; }
+        public UserRole? Role { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
         public ICollection<Url> Urls { get; } = new List<Url>();
     }

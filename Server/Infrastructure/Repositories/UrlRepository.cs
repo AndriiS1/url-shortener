@@ -22,7 +22,7 @@ namespace Infrastructure.Repositories
         }
 
 
-        public IEnumerable<TableUrlDataDto> GetAllTableUrlsWithDeleteCheck(long userId) 
+        public IEnumerable<TableUrlDataDto> GetAllTableUrlsWithDeleteCheck(long userId)
         {
             return _context.Set<Url>().Select(e => new TableUrlDataDto
             {
@@ -32,6 +32,18 @@ namespace Infrastructure.Repositories
                 CanDelete = (e.UserId == userId)
             });
         }
+
+        public IEnumerable<TableUrlDataDto> GetAllAdminTableUrls()
+        {
+            return _context.Set<Url>().Select(e => new TableUrlDataDto
+            {
+                Id = e.Id,
+                OriginalUrl = e.OriginalUrl,
+                ShortUrl = e.ShortUrl,
+                CanDelete = true
+            });
+        }
+
 
         public Url? GetUrlWithLoadedUserData(long id)
         {

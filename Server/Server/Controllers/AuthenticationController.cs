@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Domain.Dto;
+using Domain.Enums;
 using Domain.Models;
 using Domain.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -38,7 +39,7 @@ namespace ServerPesentation.Controllers
                 var refreshTokenDataDto = _jwtService.GenerateRefreshTokenData();
                 _unitOfWork.Users.UpdateUserRefreshTokenData(user.Id, refreshTokenDataDto);
                 _unitOfWork.Complete();
-                response = Ok(new { accessToken = accessToken, refreshToken = refreshTokenDataDto.RefreshToken});
+                response = Ok(new { accessToken = accessToken, refreshToken = refreshTokenDataDto.RefreshToken });
             }
             return response;
         }
@@ -50,12 +51,13 @@ namespace ServerPesentation.Controllers
         {
             if (_validationService.UserIsValid(user))
             {
-                var tryFindExistingUser = _unitOfWork.Users.FirstOrDefault(u => u.Email== user.Email);
-                if (tryFindExistingUser != null) 
+                var tryFindExistingUser = _unitOfWork.Users.FirstOrDefault(u => u.Email == user.Email);
+                if (tryFindExistingUser != null)
                 {
                     return BadRequest("User with this email already exists.");
                 }
                 user.Password = _hashService.getHash(user.Password ?? "");
+                user.Role = UserRole.Basic;
                 _unitOfWork.Users.Add(user);
                 _unitOfWork.Complete();
                 var accessToken = _jwtService.GenerateJSONWebToken(user);

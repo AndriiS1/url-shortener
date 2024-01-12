@@ -7,6 +7,7 @@ namespace Domain.Repositories
     {
         IEnumerable<TableUrlDataDto> GetAllTableUrls();
         IEnumerable<TableUrlDataDto> GetAllTableUrlsWithDeleteCheck(long userId);
+        IEnumerable<TableUrlDataDto> GetAllAdminTableUrls();
         Url? GetUrlWithLoadedUserData(long id);
     }
 }

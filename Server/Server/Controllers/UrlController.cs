@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Domain.Dto;
+using Domain.Enums;
 using Domain.Models;
 using Domain.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -27,15 +28,29 @@ namespace ServerPesentation.Controllers
         public IActionResult GetTableUrlsController()
         {
             var userIdFromToken = (User.Identity as ClaimsIdentity)?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userIdFromToken != null){ 
-                long userId = long.Parse(userIdFromToken); 
-                return Ok(_unitOfWork.Urls.GetAllTableUrlsWithDeleteCheck(userId).ToList()); 
+            var userRoleFromToken = (User.Identity as ClaimsIdentity)?.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (userIdFromToken != null){
+                long userId = long.Parse(userIdFromToken);
+                User? foundUser = _unitOfWork.Users.FirstOrDefault(e => e.Id == userId);
+                if (foundUser?.Role.ToString() != userRoleFromToken)
+                {
+                    return BadRequest("Wrong role. Access denied.");
+                }
+                if (userRoleFromToken == UserRole.Admin.ToString())
+                {
+                    return Ok(_unitOfWork.Urls.GetAllAdminTableUrls().ToList());
+                }
+                else
+                {
+                    return Ok(_unitOfWork.Urls.GetAllTableUrlsWithDeleteCheck(userId).ToList());
+                }
             }
             return Ok(_unitOfWork.Urls.GetAllTableUrls().ToList());
         }
 
         [HttpPost]
-        public IActionResult GetTableUrlsController(ShortenUrlDto shortenUrlDto)
+        public IActionResult CreateUrlController(ShortenUrlDto shortenUrlDto)
         {
             var userIdFromToken = (User.Identity as ClaimsIdentity)?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userIdFromToken != null)
@@ -111,10 +126,16 @@ namespace ServerPesentation.Controllers
             if (userIdFromToken != null)
             {
                 long userId = long.Parse(userIdFromToken);
+                var userRoleFromToken = (User.Identity as ClaimsIdentity)?.FindFirst(ClaimTypes.Role)?.Value;
                 Url? foundUrl = _unitOfWork.Urls.SingleOrDefault(e=> e.Id == id);
                 if (foundUrl != null)
                 {
-                    if(foundUrl.UserId == userId)
+                    User? foundUser = _unitOfWork.Users.FirstOrDefault(e => e.Id == userId);
+                    if (foundUser?.Role.ToString() != userRoleFromToken)
+                    {
+                        return BadRequest("Wrong role. Access denied.");
+                    }
+                    if(foundUrl.UserId == userId || userRoleFromToken == UserRole.Admin.ToString())
                     {
                         _unitOfWork.Urls.Remove(foundUrl);
                         _unitOfWork.Complete();

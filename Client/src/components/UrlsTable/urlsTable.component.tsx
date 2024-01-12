@@ -3,6 +3,7 @@ import UrlService from "../../Services/url.service";
 import { TableUrl } from "./Types/types";
 import tokenService from "../../Services/token.service";
 import DeleteIcon from "@mui/icons-material/Delete";
+import jwt_decode from "jwt-decode";
 import {
   Button,
   IconButton,
@@ -21,6 +22,12 @@ export default function UrlsTable() {
   const [tableUrls, setTableUrls] = useState<TableUrl[]>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const userIsLogged = tokenService.isUserLogged();
+  const tokenClaims = jwt_decode<{
+    name: string;
+    family_name: string;
+    role: string;
+  }>(tokenService.getLocalAccessToken());
+
   const navigate = useNavigate();
 
   const setUrlData = async () => {
@@ -34,6 +41,7 @@ export default function UrlsTable() {
 
   useEffect(() => {
     setUrlData();
+    console.log(tokenClaims);
   }, [isModalOpen]);
 
   const handleDelete = async (id: number) => {
