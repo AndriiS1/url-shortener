@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./userForm.component.style.css";
 import { Form, Link, useNavigate } from "react-router-dom";
 import { Button, FormControl } from "@mui/material";
@@ -45,36 +45,20 @@ export default function UserForm(props: { formType: userFormType }) {
     secondName,
   }
 
-  const HandleChange = (e: any, inputType: InputType) => {
-    switch (inputType) {
-      case InputType.email:
-        setEmail(e.target.value);
-        emailRegexPatter.test(email)
-          ? setEmailError(false)
-          : setEmailError(true);
-        break;
-      case InputType.password:
-        setPassword(e.target.value);
-        passwordRegexPatter.test(password)
-          ? setPasswordError(false)
-          : setPasswordError(true);
-        break;
-      case InputType.firstName:
-        setFirstName(e.target.value);
-        nameRegexPatter.test(firstName)
-          ? setFirstNameError(false)
-          : setFirstNameError(true);
-        break;
-      case InputType.secondName:
-        setSecondName(e.target.value);
-        nameRegexPatter.test(secondName)
-          ? setSecondNameError(false)
-          : setSecondNameError(true);
-        break;
-      default:
-        break;
-    }
-  };
+  useEffect(() => {
+    const validateField = (
+      field: string,
+      regexPattern: RegExp,
+      setError: (error: boolean) => void
+    ) => {
+      field && setError(!regexPattern.test(field));
+    };
+
+    validateField(firstName, nameRegexPatter, setFirstNameError);
+    validateField(secondName, nameRegexPatter, setSecondNameError);
+    validateField(email, emailRegexPatter, setEmailError);
+    validateField(password, passwordRegexPatter, setPasswordError);
+  }, [firstName, secondName, email, password]);
 
   enum SubmitType {
     login,
@@ -124,7 +108,7 @@ export default function UserForm(props: { formType: userFormType }) {
           <>
             <TextField
               error={firstNameError}
-              onChange={(e) => HandleChange(e, InputType.firstName)}
+              onChange={(e) => setFirstName(e.target.value)}
               required
               placeholder="Name"
               margin="dense"
@@ -133,7 +117,7 @@ export default function UserForm(props: { formType: userFormType }) {
             />
             <TextField
               error={secondNameError}
-              onChange={(e) => HandleChange(e, InputType.secondName)}
+              onChange={(e) => setSecondName(e.target.value)}
               required
               placeholder="Surname"
               margin="dense"
@@ -144,7 +128,7 @@ export default function UserForm(props: { formType: userFormType }) {
         )}
         <TextField
           error={emailError}
-          onChange={(e) => HandleChange(e, InputType.email)}
+          onChange={(e) => setEmail(e.target.value)}
           required
           placeholder="example@gmail.com"
           margin="dense"
@@ -153,7 +137,7 @@ export default function UserForm(props: { formType: userFormType }) {
         />
         <TextField
           error={passwordError}
-          onChange={(e) => HandleChange(e, InputType.password)}
+          onChange={(e) => setPassword(e.target.value)}
           required
           type="password"
           placeholder="Password"

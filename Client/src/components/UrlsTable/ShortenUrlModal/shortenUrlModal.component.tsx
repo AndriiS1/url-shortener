@@ -1,27 +1,28 @@
-import {
-  Box,
-  Button,
-  Fade,
-  FormControl,
-  FormLabel,
-  Modal,
-  Snackbar,
-  TextField,
-} from "@mui/material";
+import { Box, Button, Fade, FormLabel, Modal, TextField } from "@mui/material";
 import "./shortenUrlModal.component.style.css";
 import { Form } from "react-router-dom";
 import urlService from "../../../Services/url.service";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ShortenUrlModal(props: {
   open: boolean;
   setOpen: (a: boolean) => void;
 }) {
-  const [url, setUrl] = useState<string>("");
+  const [url, setUrl] = useState<string>();
+  const [urlError, setUrlError] = useState<boolean>(false);
+  const urlRegexPattern = new RegExp(
+    "(https?://(?:www.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9].[^s]{2,}|www.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9].[^s]{2,}|https?://(?:www.|(?!www))[a-zA-Z0-9]+.[^s]{2,}|www.[a-zA-Z0-9]+.[^s]{2,})"
+  );
 
   const handleSubmit = () => {
-    urlService.CreateShortUlr(url);
+    url && urlService.CreateShortUlr(url);
   };
+
+  useEffect(() => {
+    if (url) {
+      urlRegexPattern?.test(url) ? setUrlError(false) : setUrlError(true);
+    }
+  }, [url]);
 
   return (
     <>
@@ -34,15 +35,15 @@ export default function ShortenUrlModal(props: {
           <Box className="modal-box">
             <Form className="add-modal-form" onSubmit={handleSubmit}>
               <span className="form-title">Shorten an url</span>
-              <FormControl required className="add-modal-element">
-                <FormLabel className="label">Input your url</FormLabel>
-                <TextField
-                  multiline
-                  minRows={5}
-                  maxRows={20}
-                  onChange={(e) => setUrl(e.target.value)}
-                />
-              </FormControl>
+              <TextField
+                required
+                multiline
+                minRows={5}
+                maxRows={20}
+                error={urlError}
+                onChange={(e) => setUrl(e.target.value)}
+                label="Input your url"
+              />
               <div className="add-modal-button-container">
                 <Button type="submit">Submit</Button>
               </div>
