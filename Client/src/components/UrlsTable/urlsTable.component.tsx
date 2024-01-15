@@ -22,11 +22,13 @@ export default function UrlsTable() {
   const [tableUrls, setTableUrls] = useState<TableUrl[]>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const userIsLogged = tokenService.isUserLogged();
-  const tokenClaims = jwt_decode<{
-    name: string;
-    family_name: string;
-    role: string;
-  }>(tokenService.getLocalAccessToken());
+  const token = tokenService.getLocalAccessToken();
+  token &&
+    jwt_decode<{
+      name: string;
+      family_name: string;
+      role: string;
+    }>(token);
 
   const navigate = useNavigate();
 
@@ -126,7 +128,7 @@ export default function UrlsTable() {
       ) : (
         <h1 className="no-content-text">
           {`No urls available. Let's ${
-            userIsLogged ? "log in and " : ""
+            !userIsLogged ? "log in and " : ""
           }add them...`}
         </h1>
       )}
