@@ -1,13 +1,11 @@
-﻿using Domain.Dto;
+﻿using System.Security.Claims;
+using Domain.Dtos;
 using Domain.Models;
-using System.Security.Claims;
+namespace Domain.Services;
 
-namespace Domain.Services
+public interface IJwtService
 {
-    public interface IJwtService
-    {
-        string GenerateJSONWebToken(User user);
-        RefreshTokenDataDto GenerateRefreshTokenData();
-        IEnumerable<Claim>? GetPrincipalFromExpiredToken(string? token);
-    }
+    string GenerateJSONWebToken(User user);
+    RefreshTokenDataDto GenerateRefreshTokenData();
+    IEnumerable<Claim>? GetPrincipalFromExpiredToken(string? token);
 }

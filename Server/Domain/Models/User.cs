@@ -1,18 +1,15 @@
 ﻿using Domain.Enums;
-using static System.Net.Mime.MediaTypeNames;
+namespace Domain.Models;
 
-namespace Domain.Models
+public class User
 {
-    public class User
-    {
-        public long Id { get; set; }
-        public string? FirstName { get; set; }
-        public string? SecondName { get; set; }
-        public string? Email { get; set; }
-        public string? Password { get; set; }
-        public string? RefreshToken { get; set; }
-        public UserRole? Role { get; set; }
-        public DateTime? RefreshTokenExpiryTime { get; set; }
-        public ICollection<Url> Urls { get; } = new List<Url>();
-    }
+    public long Id { get; set; }
+    public required string FirstName { get; set; }
+    public required string SecondName { get; set; }
+    public required string Email { get; set; }
+    public required string Password { get; set; }
+    public required string RefreshToken { get; set; }
+    public UserRole Role { get; set; } = UserRole.Basic;
+    public required DateTime RefreshTokenExpiryTime { get; set; }
+    public ICollection<Url> Urls { get; } = new List<Url>();
 }

@@ -1,36 +1,26 @@
-﻿using Domain.Models;
-using Domain.Services;
-using Domain;
+﻿using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+namespace ServerPesentation.Controllers;
 
-namespace ServerPesentation.Controllers
+[ApiController]
+[Route("/")]
+public class RedirectController : ControllerBase
 {
-    [ApiController]
-    [Route("/")]
-    public class RedirectController : ControllerBase
+    private readonly IUnitOfWork _unitOfWork;
+
+    public RedirectController(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
+
+    [AllowAnonymous]
+    [HttpGet("{code:long}")]
+    public IResult GetTableUrlsController(string code)
     {
-        private readonly IUnitOfWork _unitOfWork;
+        var foundUrl = _unitOfWork.Urls.SingleOrDefault(u => u.Code == code);
 
-        public RedirectController(IUnitOfWork unitOfWork)
+        if (foundUrl != null)
         {
-            _unitOfWork = unitOfWork;
+            return Results.Redirect(foundUrl.OriginalUrl);
         }
-
-        [AllowAnonymous]
-        [HttpGet("{code:long}")]
-        public IResult GetTableUrlsController(string code)
-        {
-            var foundUrl = _unitOfWork.Urls.SingleOrDefault(u => u.Code == code);
-            if(foundUrl != null) 
-            {
-                return Results.Redirect(foundUrl.OriginalUrl);
-            }
-            else
-            {
-                return Results.NotFound();
-            }
-        }
+        return Results.NotFound();
     }
 }

@@ -1,30 +1,22 @@
 ﻿using Domain.Services;
-using Microsoft.Extensions.Primitives;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace Infrastructure.Services;
 
-namespace Infrastructure.Services
+public class UrlShortenerService : IUrlShortenerService
 {
-    public class UrlShortenerService : IUrlShortenerService
+    private readonly string ALPHABET;
+    private readonly int BASE;
+
+    public UrlShortenerService()
     {
-        private readonly String ALPHABET;
-        private readonly int BASE;
+        ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        BASE = ALPHABET.Count();
+    }
 
-        public UrlShortenerService()
-        {
-            ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            BASE = ALPHABET.Count();
-        }
-
-        public string GenerageShortUrl(string url)
-        {
-            int num = 0;
-            for ( int i = 0; i < url.Count(); i++)
-                num = num * BASE + ALPHABET.IndexOf(url[i]);
-            return Math.Abs(num).ToString();
-        }
+    public string GenerageShortUrl(string url)
+    {
+        var num = 0;
+        for (var i = 0; i < url.Count(); i++)
+            num = num * BASE + ALPHABET.IndexOf(url[i]);
+        return Math.Abs(num).ToString();
     }
 }
