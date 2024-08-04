@@ -1,97 +1,34 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using Domain;
-using Domain.Dtos;
-using Domain.Enums;
-using Domain.Models;
-using Domain.Services;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UseCase.Commands.Login;
+using UseCase.Commands.Register;
 namespace Presentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthenticationController(IUnitOfWork unitOfWork, IJwtService jwtService, IHashService hashService, IValidationService validationService) : ControllerBase
+public class AuthenticationController(IMediator mediator) : ControllerBase
 {
     [AllowAnonymous]
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> LoginController(LoginDto loginData)
+    public async Task<IActionResult> LoginController(LoginCommand command)
     {
-        var user = await unitOfWork.Users.SingleOrDefault(u => u.Password == hashService.GetHash(loginData.Password) && u.Email == loginData.Email);
-
-        if (user == null)
-            return Unauthorized("User not found.");
-
-        var accessToken = jwtService.GenerateJsonWebToken(user);
-        var refreshTokenDataDto = jwtService.GenerateRefreshTokenData();
-        await unitOfWork.Users.UpdateUserRefreshTokenData(user.Id, refreshTokenDataDto);
-        await unitOfWork.Complete();
-
-        return Ok(new
-        {
-            accessToken,
-            refreshToken = refreshTokenDataDto.RefreshToken
-        });
+        return await mediator.Send(command);
     }
 
     [AllowAnonymous]
     [HttpPost]
     [Route("register")]
-    public async Task<IActionResult> Register(User user)
+    public async Task<IActionResult> Register(RegisterCommand registerCommand)
     {
-        if (!validationService.UserIsValid(user))
-            return BadRequest("User data is not valid.");
-
-        var tryFindExistingUser = await unitOfWork.Users.SingleOrDefault(u => u.Email == user.Email);
-
-        if (tryFindExistingUser != null)
-            return BadRequest("User with this email already exists.");
-
-        user.Password = hashService.GetHash(user.Password);
-        user.Role = UserRole.Basic;
-        await unitOfWork.Users.Add(user);
-
-        var accessToken = jwtService.GenerateJsonWebToken(user);
-        var refreshTokenDataDto = jwtService.GenerateRefreshTokenData();
-        await unitOfWork.Users.UpdateUserRefreshTokenData(user.Id, refreshTokenDataDto);
-        await unitOfWork.Complete();
-        return Ok(new
-        {
-            accessToken,
-            refreshToken = refreshTokenDataDto.RefreshToken
-        });
+        return await mediator.Send(registerCommand);
     }
 
     [HttpPost]
     [Route("refresh-token")]
-    public async Task<IActionResult> RefreshToken(TokenDto tokenData)
+    public async Task<IActionResult> RefreshToken(RegisterCommand command)
     {
-        var accessToken = tokenData.AccessToken;
-        var refreshToken = tokenData.RefreshToken;
-
-        var claims = jwtService.GetPrincipalFromExpiredToken(accessToken);
-
-        if (claims == null)
-            return BadRequest("Invalid access or refresh token");
-
-        var userId = claims.Single(claim => claim.Type == JwtRegisteredClaimNames.NameId).Value;
-
-        var user = await unitOfWork.Users.SingleOrDefault(u => u.Id == long.Parse(userId));
-
-        if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
-        {
-            return BadRequest("Invalid access or refresh token");
-        }
-
-        var newAccessToken = jwtService.GenerateJsonWebToken(user);
-        var newRefreshTokenDataDto = jwtService.GenerateRefreshTokenData();
-        await unitOfWork.Users.UpdateUserRefreshTokenData(user.Id, newRefreshTokenDataDto);
-        await unitOfWork.Complete();
-
-        return Ok(new
-        {
-            accessToken = newAccessToken,
-            refreshToken = newRefreshTokenDataDto.RefreshToken
-        });
+        return await mediator.Send(command);
     }
 }

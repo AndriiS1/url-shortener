@@ -6,6 +6,7 @@ using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Presentation.Controllers;
+using UseCase.Commands.Login;
 using static NUnit.Framework.Assert;
 namespace Tests.Tests.AuthenticationControllerTests;
 
@@ -21,34 +22,21 @@ public sealed class LoginTest
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _jwtServiceMock = new Mock<IJwtService>();
             _hashServiceMock = new Mock<IHashService>();
-            _validationServiceMock = new Mock<IValidationService>();
-
-            _authenticationController = new AuthenticationController(
-                _unitOfWorkMock.Object,
-                _jwtServiceMock.Object,
-                _hashServiceMock.Object,
-                _validationServiceMock.Object
-            );
         }
-        private AuthenticationController _authenticationController;
+        
         private Mock<IUnitOfWork> _unitOfWorkMock;
         private Mock<IJwtService> _jwtServiceMock;
         private Mock<IHashService> _hashServiceMock;
-        private Mock<IValidationService> _validationServiceMock;
 
         [Test]
-        public async Task LoginController_ValidLoginData_ReturnsOkResultWithAccessTokenAndRefreshToken()
+        public async Task LoginCommandHandler_ValidLoginData_ReturnsOkResultWithAccessTokenAndRefreshToken()
         {
-            const string userPassword = "1ecxxcJsdEREw";
-            var accessToken = "accessToken";
-            var refreshToken = "refreshToken";
             // Arrange
-            var loginData = new LoginDto
-            {
-                Email = "test@example.com",
-                Password = userPassword
-            };
+            const string userPassword = "1ecxxcJsdEREw";
+            const string accessToken = "accessToken";
+            const string refreshToken = "refreshToken";
 
+            var loginCommand = new LoginCommand("test@example.com", userPassword);
             var user = new User
             {
                 Id = 1,
@@ -60,42 +48,47 @@ public sealed class LoginTest
                 RefreshTokenExpiryTime = DateTime.Now
             };
 
-
             var refreshTokenDataDto = new RefreshTokenDataDto
             {
                 RefreshToken = refreshToken,
                 RefreshTokenExpiryTime = DateTime.Now.AddDays(2)
             };
 
-            _unitOfWorkMock.Setup(u => u.Users.SingleOrDefault(It.IsAny<Expression<Func<User, bool>>>())).Returns(Task.FromResult(user)!);
+            _unitOfWorkMock.Setup(u => u.Users.SingleOrDefault(It.IsAny<Expression<Func<User, bool>>>())).ReturnsAsync(user);
             _jwtServiceMock.Setup(j => j.GenerateJsonWebToken(user)).Returns(accessToken);
             _jwtServiceMock.Setup(j => j.GenerateRefreshTokenData()).Returns(refreshTokenDataDto);
             _hashServiceMock.Setup(h => h.GetHash(userPassword)).Returns("hashedPassword");
 
+            var handler = new LoginCommandHandler(_unitOfWorkMock.Object, _jwtServiceMock.Object, _hashServiceMock.Object);
+
             // Act
-            var result = (await _authenticationController.LoginController(loginData)) as OkObjectResult;
+            var result = await handler.Handle(loginCommand, CancellationToken.None) as OkObjectResult;
+
+            // Assert
             That(result, Is.Not.Null);
             That(result?.StatusCode, Is.EqualTo(200));
-            Action<object?> isNotNull = IsNotNull;
-            isNotNull(result?.Value);
-            That(result?.Value?.GetType().GetProperty("accessToken")?.GetValue(result.Value), Is.EqualTo(accessToken));
-            AreEqual(refreshTokenDataDto.RefreshToken, result?.Value?.GetType().GetProperty("refreshToken")?.GetValue(result.Value));
+            That(result?.Value, Is.Not.Null);
+
+            var resultValue = result?.Value?.GetType().GetProperty("accessToken")?.GetValue(result.Value);
+            That(resultValue, Is.EqualTo(accessToken));
+
+            var resultRefreshToken = result?.Value?.GetType().GetProperty("refreshToken")?.GetValue(result.Value);
+            That(resultRefreshToken, Is.EqualTo(refreshTokenDataDto.RefreshToken));
         }
 
+
         [Test]
-        public async Task LoginController_InvalidLoginData_ReturnsUnauthorizedResult()
+        public async Task LoginCommandHandler_InvalidLoginData_ReturnsUnauthorizedResult()
         {
             // Arrange
-            var loginData = new LoginDto
-            {
-                Email = "test@example.com",
-                Password = "password"
-            };
+            var loginCommand = new LoginCommand("test@example.com", "password");
 
-            _unitOfWorkMock.Setup(u => u.Users.SingleOrDefault(It.IsAny<Expression<Func<User, bool>>>())).Returns(Task.FromResult((User)null));
+            _unitOfWorkMock.Setup(u => u.Users.SingleOrDefault(It.IsAny<Expression<Func<User, bool>>>())).ReturnsAsync((User)null);
+
+            var handler = new LoginCommandHandler(_unitOfWorkMock.Object, _jwtServiceMock.Object, _hashServiceMock.Object);
 
             // Act
-            var result = (await _authenticationController.LoginController(loginData)) as UnauthorizedObjectResult;
+            var result = await handler.Handle(loginCommand, CancellationToken.None) as UnauthorizedObjectResult;
 
             // Assert
             Multiple(() =>
