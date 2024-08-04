@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerPesentation", "Server\ServerPesentation.csproj", "{2C774B70-7D91-4FEE-813F-FB7A27F28990}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation", "Server\Presentation.csproj", "{2C774B70-7D91-4FEE-813F-FB7A27F28990}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{D89057E7-3A18-422F-88C8-0666F075B2B3}"
 EndProject

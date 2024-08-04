@@ -5,7 +5,7 @@ namespace Domain.Services;
 
 public interface IJwtService
 {
-    string GenerateJSONWebToken(User user);
+    string GenerateJsonWebToken(User user);
     RefreshTokenDataDto GenerateRefreshTokenData();
     IEnumerable<Claim>? GetPrincipalFromExpiredToken(string? token);
 }

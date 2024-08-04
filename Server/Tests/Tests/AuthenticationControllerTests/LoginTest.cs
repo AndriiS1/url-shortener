@@ -5,7 +5,7 @@ using Domain.Models;
 using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using ServerPesentation.Controllers;
+using Presentation.Controllers;
 using static NUnit.Framework.Assert;
 namespace Tests.Tests.AuthenticationControllerTests;
 
@@ -68,7 +68,7 @@ public sealed class LoginTest
             };
 
             _unitOfWorkMock.Setup(u => u.Users.SingleOrDefault(It.IsAny<Expression<Func<User, bool>>>())).Returns(Task.FromResult(user)!);
-            _jwtServiceMock.Setup(j => j.GenerateJSONWebToken(user)).Returns(accessToken);
+            _jwtServiceMock.Setup(j => j.GenerateJsonWebToken(user)).Returns(accessToken);
             _jwtServiceMock.Setup(j => j.GenerateRefreshTokenData()).Returns(refreshTokenDataDto);
             _hashServiceMock.Setup(h => h.GetHash(userPassword)).Returns("hashedPassword");
 

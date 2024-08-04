@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using System.Text;
+using Domain;
 using Domain.Services;
 using Infrastructure.DataBase;
 using Infrastructure.DataBase.Context;
@@ -7,13 +8,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
-
-namespace ServerPesentation.Extensions
+namespace Presentation.Extensions
 {
     public static class ServiceExtensions
     {
-        public static void ConfigureJWT(this WebApplicationBuilder builder)
+        public static void ConfigureJwt(this WebApplicationBuilder builder)
         {
             builder.Services.AddAuthentication(options =>
             {
@@ -66,7 +65,7 @@ namespace ServerPesentation.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
-        public static void AddCustomCORS(this IServiceCollection services)
+        public static void ConfigureCors(this IServiceCollection services)
         {
             services.AddCors(options =>
             {
@@ -107,7 +106,7 @@ namespace ServerPesentation.Extensions
                                 Id="Bearer"
                             }
                         },
-                        new string[]{}
+                        Array.Empty<string>()
                     }
                 });
             });

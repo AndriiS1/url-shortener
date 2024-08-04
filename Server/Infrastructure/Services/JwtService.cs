@@ -11,7 +11,7 @@ namespace Infrastructure.Services;
 
 public class JwtService(IConfiguration config) : IJwtService
 {
-    public string GenerateJSONWebToken(User user)
+    public string GenerateJsonWebToken(User user)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]));
         _ = int.TryParse(config["JWT:TokenValidityInMinutes"], out var tokenValidityInMinutes);

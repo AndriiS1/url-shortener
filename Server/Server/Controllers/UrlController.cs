@@ -6,7 +6,7 @@ using Domain.Models;
 using Domain.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-namespace ServerPesentation.Controllers;
+namespace Presentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]

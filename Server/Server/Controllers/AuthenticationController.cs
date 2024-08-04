@@ -6,7 +6,7 @@ using Domain.Models;
 using Domain.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-namespace ServerPesentation.Controllers;
+namespace Presentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -22,7 +22,7 @@ public class AuthenticationController(IUnitOfWork unitOfWork, IJwtService jwtSer
         if (user == null)
             return Unauthorized("User not found.");
 
-        var accessToken = jwtService.GenerateJSONWebToken(user);
+        var accessToken = jwtService.GenerateJsonWebToken(user);
         var refreshTokenDataDto = jwtService.GenerateRefreshTokenData();
         await unitOfWork.Users.UpdateUserRefreshTokenData(user.Id, refreshTokenDataDto);
         await unitOfWork.Complete();
@@ -51,7 +51,7 @@ public class AuthenticationController(IUnitOfWork unitOfWork, IJwtService jwtSer
         user.Role = UserRole.Basic;
         await unitOfWork.Users.Add(user);
 
-        var accessToken = jwtService.GenerateJSONWebToken(user);
+        var accessToken = jwtService.GenerateJsonWebToken(user);
         var refreshTokenDataDto = jwtService.GenerateRefreshTokenData();
         await unitOfWork.Users.UpdateUserRefreshTokenData(user.Id, refreshTokenDataDto);
         await unitOfWork.Complete();
@@ -83,7 +83,7 @@ public class AuthenticationController(IUnitOfWork unitOfWork, IJwtService jwtSer
             return BadRequest("Invalid access or refresh token");
         }
 
-        var newAccessToken = jwtService.GenerateJSONWebToken(user);
+        var newAccessToken = jwtService.GenerateJsonWebToken(user);
         var newRefreshTokenDataDto = jwtService.GenerateRefreshTokenData();
         await unitOfWork.Users.UpdateUserRefreshTokenData(user.Id, newRefreshTokenDataDto);
         await unitOfWork.Complete();

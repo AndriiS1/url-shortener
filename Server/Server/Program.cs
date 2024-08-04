@@ -1,5 +1,4 @@
-using ServerPesentation.Extensions;
-
+using Presentation.Extensions;
 namespace Server
 {
     public class Program
@@ -11,7 +10,7 @@ namespace Server
             builder.Services.AddControllers();
 
             builder.AddServerDbContext();
-            builder.ConfigureJWT();
+            builder.ConfigureJwt();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddCustomizedSwagger();
             builder.Services.AddJwtService();
@@ -19,7 +18,7 @@ namespace Server
             builder.Services.AddUnitOfWork();
             builder.Services.AddurlShortenerService();
             builder.Services.AddValidationService();
-            builder.Services.AddCustomCORS();
+            builder.Services.ConfigureCors();
 
             var app = builder.Build();
 
