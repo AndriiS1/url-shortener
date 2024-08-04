@@ -2,10 +2,10 @@
 using Domain;
 using Domain.Dtos;
 using Domain.Models;
-using Domain.Services;
+using Infrastructure.Services.HashService;
+using Infrastructure.Services.JwtService;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Presentation.Controllers;
 using UseCase.Commands.Login;
 using static NUnit.Framework.Assert;
 namespace Tests.Tests.AuthenticationControllerTests;
@@ -23,7 +23,7 @@ public sealed class LoginTest
             _jwtServiceMock = new Mock<IJwtService>();
             _hashServiceMock = new Mock<IHashService>();
         }
-        
+
         private Mock<IUnitOfWork> _unitOfWorkMock;
         private Mock<IJwtService> _jwtServiceMock;
         private Mock<IHashService> _hashServiceMock;

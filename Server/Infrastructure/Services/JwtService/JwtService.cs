@@ -4,10 +4,9 @@ using System.Security.Cryptography;
 using System.Text;
 using Domain.Dtos;
 using Domain.Models;
-using Domain.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-namespace Infrastructure.Services;
+namespace Infrastructure.Services.JwtService;
 
 public class JwtService(IConfiguration config) : IJwtService
 {

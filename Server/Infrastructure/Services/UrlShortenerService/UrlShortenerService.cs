@@ -1,5 +1,4 @@
-﻿using Domain.Services;
-namespace Infrastructure.Services;
+﻿namespace Infrastructure.Services.UrlShortenerService;
 
 public class UrlShortenerService : IUrlShortenerService
 {

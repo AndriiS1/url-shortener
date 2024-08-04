@@ -1,4 +1,4 @@
-﻿namespace Domain.Services;
+﻿namespace Infrastructure.Services.UrlShortenerService;
 
 public interface IUrlShortenerService
 {

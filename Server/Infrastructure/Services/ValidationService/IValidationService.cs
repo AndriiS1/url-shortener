@@ -1,5 +1,5 @@
 ﻿using Domain.Models;
-namespace Domain.Services;
+namespace Infrastructure.Services.ValidationService;
 
 public interface IValidationService
 {

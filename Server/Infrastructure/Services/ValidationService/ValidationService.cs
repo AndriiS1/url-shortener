@@ -1,7 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using Domain.Models;
-using Domain.Services;
-namespace Infrastructure.Services;
+namespace Infrastructure.Services.ValidationService;
 
 public class ValidationService : IValidationService
 {

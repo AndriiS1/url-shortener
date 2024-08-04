@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Domain.Dtos;
 using Domain.Models;
-namespace Domain.Services;
+namespace Infrastructure.Services.JwtService;
 
 public interface IJwtService
 {

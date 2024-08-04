@@ -1,6 +1,6 @@
 using Domain;
 using Domain.Models;
-using Domain.Services;
+using Infrastructure.Services.UrlShortenerService;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 namespace UseCase.Commands.CreateUrlCommand;

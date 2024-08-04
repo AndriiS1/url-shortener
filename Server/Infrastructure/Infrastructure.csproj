@@ -18,4 +18,10 @@
         <ProjectReference Include="..\Domain\Domain.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Reference Include="Microsoft.AspNetCore">
+            <HintPath>..\..\..\..\.dotnet\packs\Microsoft.AspNetCore.App.Ref\8.0.7\ref\net8.0\Microsoft.AspNetCore.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
 </Project>

@@ -1,5 +1,5 @@
 using Domain;
-using Domain.Services;
+using Infrastructure.Services.JwtService;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.JsonWebTokens;

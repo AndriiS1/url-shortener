@@ -1,7 +1,9 @@
 using Domain;
 using Domain.Enums;
 using Domain.Models;
-using Domain.Services;
+using Infrastructure.Services.HashService;
+using Infrastructure.Services.JwtService;
+using Infrastructure.Services.ValidationService;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 namespace UseCase.Commands.Register;

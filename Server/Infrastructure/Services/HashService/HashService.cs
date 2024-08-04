@@ -1,7 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using Domain.Services;
-namespace Infrastructure.Services;
+namespace Infrastructure.Services.HashService;
 
 public class HashService : IHashService
 {
