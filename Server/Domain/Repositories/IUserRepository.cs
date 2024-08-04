@@ -1,10 +1,8 @@
-﻿using Domain.Dto;
+﻿using Domain.Dtos;
 using Domain.Models;
+namespace Domain.Repositories;
 
-namespace Domain.Repositories
+public interface IUserRepository : IRepository<User>
 {
-    public interface IUserRepository : IRepository<User>
-    {
-        void UpdateUserRefreshTokenData(long userId, RefreshTokenDataDto refreshTokenDataDto);
-    }
+    void UpdateUserRefreshTokenData(long userId, RefreshTokenDataDto refreshTokenDataDto);
 }

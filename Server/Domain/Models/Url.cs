@@ -1,13 +1,12 @@
-﻿namespace Domain.Models
+﻿namespace Domain.Models;
+
+public class Url
 {
-    public class Url
-    {
-        public long Id { get; set; }
-        public DateTime? Date { get; set; }
-        public string? OriginalUrl { get; set; }
-        public string? ShortUrl { get; set; }
-        public string? Code { get; set; }
-        public long? UserId { get; set; }
-        public User? User { get; set; }
-    }
+    public long Id { get; set; }
+    public required DateTime Date { get; set; }
+    public required string OriginalUrl { get; set; }
+    public required string ShortUrl { get; set; }
+    public required string Code { get; set; }
+    public required long UserId { get; set; }
+    public User User { get; set; } = null!;
 }

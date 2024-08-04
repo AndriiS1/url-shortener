@@ -1,14 +1,8 @@
 ﻿using Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace Domain.Services;
 
-namespace Domain.Services
+public interface IValidationService
+
 {
-    public interface IValidationService
-    {
-        bool UserIsValid(User user);
-    }
+    bool UserIsValid(User user);
 }

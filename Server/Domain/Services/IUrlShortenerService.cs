@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Domain.Services;
 
-namespace Domain.Services
+public interface IUrlShortenerService
 {
-    public interface IUrlShortenerService
-    {
-        string GenerageShortUrl(string url);
-    }
+    string GenerageShortUrl(string url);
 }
