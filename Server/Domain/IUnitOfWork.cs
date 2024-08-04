@@ -1,11 +1,9 @@
 ﻿using Domain.Repositories;
+namespace Domain;
 
-namespace Domain
+public interface IUnitOfWork : IDisposable
 {
-    public interface IUnitOfWork : IDisposable
-    {
-        IUserRepository Users { get; }
-        IUrlRepository Urls { get; }
-        int Complete();
-    }
+    IUserRepository Users { get; }
+    IUrlRepository Urls { get; }
+    Task<int> Complete();
 }

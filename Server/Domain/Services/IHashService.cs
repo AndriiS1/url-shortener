@@ -3,5 +3,5 @@
 public interface IHashService
 
 {
-    string getHash(string text);
+    string GetHash(string text);
 }

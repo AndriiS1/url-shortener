@@ -1,33 +1,31 @@
-﻿using Domain.Models;
+﻿using System.Text.RegularExpressions;
+using Domain.Models;
 using Domain.Services;
-using System.Text.RegularExpressions;
+namespace Infrastructure.Services;
 
-namespace Infrastructure.Services
+public class ValidationService : IValidationService
 {
-    public class ValidationService : IValidationService
+    private const string NamePattern = "^[a-zA-Z0-9]*$";
+    private const string EmailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    private const string PasswordPattern = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
+    public bool UserIsValid(User user)
     {
-        const string namePattern = "^[a-zA-Z0-9]*$";
-        const string emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-        const string passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
-        public bool UserIsValid(User user)
+        if (!Regex.IsMatch(user.FirstName ?? "", NamePattern))
         {
-            if (!Regex.IsMatch(user.FirstName ?? "", namePattern))
-            {
-                return false;
-            }
-            else if (!Regex.IsMatch(user.SecondName ?? "", namePattern))
-            {
-                return false;
-            }
-            else if (!Regex.IsMatch(user.Email ?? "", emailPattern))
-            {
-                return false;
-            }
-            else if (!Regex.IsMatch(user.Password ?? "", passwordPattern))
-            {
-                return false;
-            }
-            return true;
+            return false;
         }
+        if (!Regex.IsMatch(user.SecondName ?? "", NamePattern))
+        {
+            return false;
+        }
+        if (!Regex.IsMatch(user.Email ?? "", EmailPattern))
+        {
+            return false;
+        }
+        if (!Regex.IsMatch(user.Password ?? "", PasswordPattern))
+        {
+            return false;
+        }
+        return true;
     }
 }

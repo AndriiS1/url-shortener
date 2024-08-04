@@ -4,17 +4,18 @@ using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 namespace Infrastructure.Repositories;
 
-public class UserRepository : Repository<User>, IUserRepository
+public class UserRepository(DbContext context) : Repository<User>(context), IUserRepository
 {
-    public UserRepository(DbContext context) : base(context)
+    private readonly DbContext _context = context;
+    public async Task<bool> UpdateUserRefreshTokenData(long userId, RefreshTokenDataDto refreshTokenDataDto)
     {
+        var userToUpdate = await _context.Set<User>().SingleOrDefaultAsync(u => u.Id == userId);
 
-    }
+        if (userToUpdate is null)
+            return false;
 
-    public void UpdateUserRefreshTokenData(long userId, RefreshTokenDataDto refreshTokenDataDto)
-    {
-        var userToUpdate = _context.Set<User>().Single(u => u.Id == userId);
         userToUpdate.RefreshToken = refreshTokenDataDto.RefreshToken;
         userToUpdate.RefreshTokenExpiryTime = refreshTokenDataDto.RefreshTokenExpiryTime;
+        return true;
     }
 }

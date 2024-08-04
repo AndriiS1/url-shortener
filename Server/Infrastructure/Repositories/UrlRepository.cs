@@ -4,12 +4,9 @@ using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 namespace Infrastructure.Repositories;
 
-public class UrlRepository : Repository<Url>, IUrlRepository
+public class UrlRepository(DbContext context) : Repository<Url>(context), IUrlRepository
 {
-    public UrlRepository(DbContext context) : base(context)
-    {
-
-    }
+    private readonly DbContext _context = context;
     public IEnumerable<TableUrlDataDto> GetAllTableUrls()
     {
         return _context.Set<Url>().Select(e => new TableUrlDataDto
@@ -19,7 +16,6 @@ public class UrlRepository : Repository<Url>, IUrlRepository
             ShortUrl = e.ShortUrl
         });
     }
-
 
     public IEnumerable<TableUrlDataDto> GetAllTableUrlsWithDeleteCheck(long userId)
     {
@@ -43,9 +39,8 @@ public class UrlRepository : Repository<Url>, IUrlRepository
         });
     }
 
-
-    public Url? GetUrlWithLoadedUserData(long id)
+    public async Task<Url?> GetUrlWithLoadedUserData(long id)
     {
-        return _context.Set<Url>().Include(e => e.User).SingleOrDefault(e => e.Id == id);
+        return await _context.Set<Url>().Include(e => e.User).SingleOrDefaultAsync(e => e.Id == id);
     }
 }

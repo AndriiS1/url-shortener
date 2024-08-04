@@ -1,62 +1,42 @@
-﻿using Domain.Repositories;
+﻿using System.Linq.Expressions;
+using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+namespace Infrastructure.Repositories;
 
-namespace Infrastructure.Repositories
+public class Repository<TEntity>(DbContext context) : IRepository<TEntity> where TEntity : class
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    public async Task Add(TEntity entity)
     {
-        protected readonly DbContext _context;
+        await context.AddAsync(entity);
+    }
 
-        public Repository(DbContext context)
-        {
-            _context = context;
-        }
+    public async Task<IEnumerable<TEntity>> FindAll(Expression<Func<TEntity, bool>> predicate)
+    {
+        return await context.Set<TEntity>().Where(predicate).ToListAsync();
+    }
 
-        public void Add(TEntity entity)
-        {
-            _context.Add(entity);
-        }
+    public IEnumerable<bool> Select(Expression<Func<TEntity, bool>> predicate)
+    {
+        return context.Set<TEntity>().Select(predicate);
+    }
 
-        public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
-        {
-            return _context.Set<TEntity>().Where(predicate).ToList();
-        }
+    public async Task<TEntity?> Get(int id)
+    {
+        return await context.Set<TEntity>().FindAsync(id);
+    }
 
-        public IEnumerable<bool> Select(Expression<Func<TEntity, bool>> predicate)
-        {
-            return _context.Set<TEntity>().Select(predicate);
-        }
+    public async Task<TEntity?> SingleOrDefault(Expression<Func<TEntity, bool>> predicate)
+    {
+        return await context.Set<TEntity>().SingleOrDefaultAsync(predicate);
+    }
 
+    public async Task<IEnumerable<TEntity>> GetAll()
+    {
+        return await context.Set<TEntity>().ToListAsync();
+    }
 
-        public TEntity? Get(int id)
-        {
-            return _context.Set<TEntity>().Find(id);
-        }
-
-        public TEntity? Single(Expression<Func<TEntity, bool>> predicate)
-        {
-            return _context.Set<TEntity>().Single(predicate);
-        }
-
-        public TEntity? SingleOrDefault(Expression<Func<TEntity, bool>> predicate)
-        {
-            return _context.Set<TEntity>().SingleOrDefault(predicate);
-        }
-
-        public TEntity? FirstOrDefault(Expression<Func<TEntity, bool>> predicate)
-        {
-            return _context.Set<TEntity>().FirstOrDefault(predicate);
-        }
-
-        public IEnumerable<TEntity> GetAll()
-        {
-            return _context.Set<TEntity>().ToList();
-        }
-
-        public void Remove(TEntity entity)
-        {
-            _context.Remove(entity);
-        }
+    public void Remove(TEntity entity)
+    {
+        context.Remove(entity);
     }
 }

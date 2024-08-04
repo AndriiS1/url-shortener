@@ -4,5 +4,5 @@ namespace Domain.Repositories;
 
 public interface IUserRepository : IRepository<User>
 {
-    void UpdateUserRefreshTokenData(long userId, RefreshTokenDataDto refreshTokenDataDto);
+    Task<bool> UpdateUserRefreshTokenData(long userId, RefreshTokenDataDto refreshTokenDataDto);
 }

@@ -2,41 +2,39 @@
 using Domain.Repositories;
 using Infrastructure.DataBase.Context;
 using Infrastructure.Repositories;
+namespace Infrastructure.DataBase;
 
-namespace Infrastructure.DataBase
+public class UnitOfWork : IUnitOfWork
 {
-    public class UnitOfWork : IUnitOfWork
+    private readonly ServerDbContext _context;
+
+    private bool _disposed;
+    public UnitOfWork(ServerDbContext context)
     {
-        private readonly ServerDbContext _context;
-        public IUserRepository Users { get; private set; }
-        public IUrlRepository Urls { get; private set; }
+        _context = context;
+        Users = new UserRepository(_context);
+        Urls = new UrlRepository(_context);
+    }
+    public IUserRepository Users { get; }
+    public IUrlRepository Urls { get; }
 
-        private bool disposed = false;
-        public UnitOfWork(ServerDbContext context)
-        {
-            _context = context;
-            Users = new UserRepository(_context);
-            Urls = new UrlRepository(_context);
-        }
+    public async Task<int> Complete()
+    {
+        return await _context.SaveChangesAsync();
+    }
 
-        public int Complete()
-        {
-            return _context.SaveChanges();
-        }
+    public async void Dispose()
+    {
+        await Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
-        protected virtual void Dispose(bool disposing)
+    protected virtual async Task Dispose(bool disposing)
+    {
+        if (!_disposed && disposing)
         {
-            if (!disposed && disposing)
-            {
-                _context.Dispose();
-            }
-            disposed = true;
+            await _context.DisposeAsync();
         }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+        _disposed = true;
     }
 }

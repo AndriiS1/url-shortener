@@ -2,5 +2,5 @@
 
 public interface IUrlShortenerService
 {
-    string GenerageShortUrl(string url);
+    string GenerateShortUrl(string url);
 }

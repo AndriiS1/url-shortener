@@ -10,103 +10,83 @@ namespace ServerPesentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthenticationController : ControllerBase
+public class AuthenticationController(IUnitOfWork unitOfWork, IJwtService jwtService, IHashService hashService, IValidationService validationService) : ControllerBase
 {
-    private readonly IHashService _hashService;
-    private readonly IJwtService _jwtService;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IValidationService _validationService;
-
-    public AuthenticationController(IUnitOfWork unitOfWork, IJwtService jwtService, IHashService hashService, IValidationService validationService)
-    {
-        _unitOfWork = unitOfWork;
-        _jwtService = jwtService;
-        _hashService = hashService;
-        _validationService = validationService;
-    }
-
     [AllowAnonymous]
     [HttpPost]
     [Route("login")]
-    public IActionResult LoginController(LoginDto loginData)
+    public async Task<IActionResult> LoginController(LoginDto loginData)
     {
-        IActionResult response = Unauthorized("User not found.");
-        var user = _unitOfWork.Users.SingleOrDefault(u => u.Password == _hashService.getHash(loginData.Password) && u.Email == loginData.Email);
-        if (user != null)
+        var user = await unitOfWork.Users.SingleOrDefault(u => u.Password == hashService.GetHash(loginData.Password) && u.Email == loginData.Email);
+
+        if (user == null)
+            return Unauthorized("User not found.");
+
+        var accessToken = jwtService.GenerateJSONWebToken(user);
+        var refreshTokenDataDto = jwtService.GenerateRefreshTokenData();
+        await unitOfWork.Users.UpdateUserRefreshTokenData(user.Id, refreshTokenDataDto);
+        await unitOfWork.Complete();
+
+        return Ok(new
         {
-            var accessToken = _jwtService.GenerateJSONWebToken(user);
-            var refreshTokenDataDto = _jwtService.GenerateRefreshTokenData();
-            _unitOfWork.Users.UpdateUserRefreshTokenData(user.Id, refreshTokenDataDto);
-            _unitOfWork.Complete();
-            response = Ok(new
-            {
-                accessToken,
-                refreshToken = refreshTokenDataDto.RefreshToken
-            });
-        }
-        return response;
+            accessToken,
+            refreshToken = refreshTokenDataDto.RefreshToken
+        });
     }
 
     [AllowAnonymous]
     [HttpPost]
     [Route("register")]
-    public IActionResult Register(User user)
+    public async Task<IActionResult> Register(User user)
     {
-        if (_validationService.UserIsValid(user))
+        if (!validationService.UserIsValid(user))
+            return BadRequest("User data is not valid.");
+
+        var tryFindExistingUser = await unitOfWork.Users.SingleOrDefault(u => u.Email == user.Email);
+
+        if (tryFindExistingUser != null)
+            return BadRequest("User with this email already exists.");
+
+        user.Password = hashService.GetHash(user.Password);
+        user.Role = UserRole.Basic;
+        await unitOfWork.Users.Add(user);
+
+        var accessToken = jwtService.GenerateJSONWebToken(user);
+        var refreshTokenDataDto = jwtService.GenerateRefreshTokenData();
+        await unitOfWork.Users.UpdateUserRefreshTokenData(user.Id, refreshTokenDataDto);
+        await unitOfWork.Complete();
+        return Ok(new
         {
-            var tryFindExistingUser = _unitOfWork.Users.FirstOrDefault(u => u.Email == user.Email);
-            if (tryFindExistingUser != null)
-            {
-                return BadRequest("User with this email already exists.");
-            }
-            user.Password = _hashService.getHash(user.Password ?? "");
-            user.Role = UserRole.Basic;
-            _unitOfWork.Users.Add(user);
-            _unitOfWork.Complete();
-            var accessToken = _jwtService.GenerateJSONWebToken(user);
-            var refreshTokenDataDto = _jwtService.GenerateRefreshTokenData();
-            _unitOfWork.Users.UpdateUserRefreshTokenData(user.Id, refreshTokenDataDto);
-            _unitOfWork.Complete();
-            return Ok(new
-            {
-                accessToken,
-                refreshToken = refreshTokenDataDto.RefreshToken
-            });
-        }
-        return BadRequest("User data is not valid.");
+            accessToken,
+            refreshToken = refreshTokenDataDto.RefreshToken
+        });
     }
 
     [HttpPost]
     [Route("refresh-token")]
     public async Task<IActionResult> RefreshToken(TokenDto tokenData)
     {
-        if (tokenData is null)
-        {
-            return BadRequest("Invalid client request");
-        }
-
         var accessToken = tokenData.AccessToken;
         var refreshToken = tokenData.RefreshToken;
 
-        var claims = _jwtService.GetPrincipalFromExpiredToken(accessToken);
+        var claims = jwtService.GetPrincipalFromExpiredToken(accessToken);
+
         if (claims == null)
-        {
-            return BadRequest("Invalid access token or refresh token");
-        }
+            return BadRequest("Invalid access or refresh token");
 
-        var userId = claims.Single(claim => claim.Type == JwtRegisteredClaimNames.NameId)?.Value;
+        var userId = claims.Single(claim => claim.Type == JwtRegisteredClaimNames.NameId).Value;
 
-        var user = _unitOfWork.Users.Single(u => u.Id == long.Parse(userId));
+        var user = await unitOfWork.Users.SingleOrDefault(u => u.Id == long.Parse(userId));
 
         if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
         {
-            return BadRequest("Invalid access token or refresh token");
+            return BadRequest("Invalid access or refresh token");
         }
 
-        var newAccessToken = _jwtService.GenerateJSONWebToken(user);
-        var newRefreshTokenDataDto = _jwtService.GenerateRefreshTokenData();
-        _unitOfWork.Users.UpdateUserRefreshTokenData(user.Id, newRefreshTokenDataDto);
-        _unitOfWork.Complete();
+        var newAccessToken = jwtService.GenerateJSONWebToken(user);
+        var newRefreshTokenDataDto = jwtService.GenerateRefreshTokenData();
+        await unitOfWork.Users.UpdateUserRefreshTokenData(user.Id, newRefreshTokenDataDto);
+        await unitOfWork.Complete();
 
         return Ok(new
         {

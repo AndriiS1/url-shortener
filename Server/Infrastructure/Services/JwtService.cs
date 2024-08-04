@@ -9,16 +9,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 namespace Infrastructure.Services;
 
-public class JwtService : IJwtService
+public class JwtService(IConfiguration config) : IJwtService
 {
-    private readonly IConfiguration _config;
-
-    public JwtService(IConfiguration config) => _config = config;
-
     public string GenerateJSONWebToken(User user)
     {
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-        _ = int.TryParse(_config["JWT:TokenValidityInMinutes"], out var tokenValidityInMinutes);
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]));
+        _ = int.TryParse(config["JWT:TokenValidityInMinutes"], out var tokenValidityInMinutes);
 
         var claims = new List<Claim>
         {
@@ -29,8 +25,8 @@ public class JwtService : IJwtService
         };
 
         var token = new JwtSecurityToken(
-            _config["Jwt:Issuer"],
-            _config["Jwt:Audience"],
+            config["Jwt:Issuer"],
+            config["Jwt:Audience"],
             claims,
             expires: DateTime.Now.AddMinutes(tokenValidityInMinutes),
             signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256));
@@ -43,7 +39,7 @@ public class JwtService : IJwtService
         var randomNumber = new byte[64];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomNumber);
-        _ = int.TryParse(_config["JWT:RefreshTokenValidityInDays"], out var tokenValidityInMinutes);
+        _ = int.TryParse(config["JWT:RefreshTokenValidityInDays"], out var tokenValidityInMinutes);
         var refreshTokenDataDto = new RefreshTokenDataDto
         {
             RefreshToken = Convert.ToBase64String(randomNumber),
@@ -59,7 +55,7 @@ public class JwtService : IJwtService
             ValidateAudience = false,
             ValidateIssuer = false,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Key"])),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Key"])),
             ValidateLifetime = false
         };
 

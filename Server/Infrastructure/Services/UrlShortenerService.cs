@@ -3,20 +3,18 @@ namespace Infrastructure.Services;
 
 public class UrlShortenerService : IUrlShortenerService
 {
-    private readonly string ALPHABET;
-    private readonly int BASE;
+    private readonly string _alphabet;
+    private readonly int _base;
 
     public UrlShortenerService()
     {
-        ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        BASE = ALPHABET.Count();
+        _alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        _base = _alphabet.Length;
     }
 
-    public string GenerageShortUrl(string url)
+    public string GenerateShortUrl(string url)
     {
-        var num = 0;
-        for (var i = 0; i < url.Count(); i++)
-            num = num * BASE + ALPHABET.IndexOf(url[i]);
+        var num = url.Aggregate(0, (current, c) => current * _base + _alphabet.IndexOf(url[c]));
         return Math.Abs(num).ToString();
     }
 }
